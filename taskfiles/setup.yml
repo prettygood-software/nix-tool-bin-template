@@ -1,0 +1,11 @@
+---
+version: '3'
+
+tasks:
+  default:
+    desc: Install all tools and hooks
+    cmds:
+      - mise install
+      - MISE_ENV=development mise install
+      - MISE_ENV=development mise exec -- lefthook install
+      - npm install

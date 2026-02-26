@@ -1,0 +1,34 @@
+---
+version: '3'
+
+tasks:
+  default:
+    desc: Run all linters
+    cmds:
+      - task lint:actionlint
+      - task lint:yamllint
+      - task lint:tool-json
+
+  actionlint:
+    desc: Lint GitHub Actions workflows
+    cmds:
+      - actionlint -color .github/workflows/*.yml
+
+  yamllint:
+    desc: Lint YAML files
+    cmds:
+      - yamllint --strict .
+
+  tool-json:
+    desc: Validate tool.json
+    cmds:
+      - jq empty tool.json
+      - |
+        for field in name upstream description; do
+          value=$(jq -r ".${field}" tool.json)
+          if [ "$value" = "null" ] || [ -z "$value" ]; then
+            echo "ERROR: Missing required field '${field}' in tool.json"
+            exit 1
+          fi
+        done
+        echo "tool.json is valid"

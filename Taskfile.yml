@@ -1,0 +1,14 @@
+---
+version: '3'
+
+includes:
+  setup:
+    taskfile: ./taskfiles/setup.yml
+  lint:
+    taskfile: ./taskfiles/lint.yml
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
