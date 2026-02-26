@@ -1,0 +1,36 @@
+---
+version: '3'
+
+tasks:
+  default:
+    desc: Check for new upstream releases and create issue if outdated
+    cmds:
+      - |
+        TOOL_NAME=$(jq -r .name tool.json)
+        UPSTREAM_URL=$(jq -r .upstream tool.json)
+        UPSTREAM_REPO=$(echo "${UPSTREAM_URL}" | sed 's|https://github.com/||')
+
+        UPSTREAM_VERSION=$(gh api "repos/${UPSTREAM_REPO}/releases/latest" --jq '.tag_name' 2>/dev/null || echo "none")
+        OUR_VERSION=$(gh api "repos/${GITHUB_REPOSITORY}/releases/latest" --jq '.tag_name' 2>/dev/null || echo "none")
+
+        echo "Upstream: ${UPSTREAM_VERSION}"
+        echo "Ours: ${OUR_VERSION}"
+
+        if [ "${UPSTREAM_VERSION}" = "none" ]; then
+          echo "No upstream release found"
+          exit 0
+        fi
+
+        if [ "${UPSTREAM_VERSION}" = "${OUR_VERSION}" ]; then
+          echo "Up to date"
+          exit 0
+        fi
+
+        gh issue create \
+          --title "New upstream release: ${TOOL_NAME} ${UPSTREAM_VERSION}" \
+          --body "Upstream released ${UPSTREAM_VERSION} (we have ${OUR_VERSION}). Run the Build and Release workflow with version \`${UPSTREAM_VERSION#v}\` to update."
+        echo "Issue created"
+    requires:
+      vars:
+        - GH_TOKEN
+        - GITHUB_REPOSITORY

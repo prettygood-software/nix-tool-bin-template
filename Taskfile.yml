@@ -6,6 +6,10 @@ includes:
     taskfile: ./taskfiles/setup.yml
   lint:
     taskfile: ./taskfiles/lint.yml
+  build:
+    taskfile: ./taskfiles/build.yml
+  check-upstream:
+    taskfile: ./taskfiles/check-upstream.yml
 
 tasks:
   default:

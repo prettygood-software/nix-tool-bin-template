@@ -7,6 +7,11 @@ and this project adheres to [Conventional Commits](https://www.conventionalcommi
 
 ## [Unreleased]
 
+### Changed
+
+- Extracted inline bash from `build.yml` and `check-upstream.yml` into Taskfile tasks (`build:compile`, `build:package`, `build:release`, `check-upstream`)
+- All three workflows now use `jdx/mise-action@v3` + `task` as thin orchestration wrappers
+
 ## [0.1.0] - 2026-02-26
 
 ### Added

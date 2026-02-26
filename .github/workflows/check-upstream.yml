@@ -16,37 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Read tool config
-        id: config
-        run: |
-          echo "name=$(jq -r .name tool.json)" >> "$GITHUB_OUTPUT"
-          echo "upstream=$(jq -r .upstream tool.json)" >> "$GITHUB_OUTPUT"
+      - uses: jdx/mise-action@v3
+        with:
+          install: true
+          cache: true
+        env:
+          MISE_ENV: ci
 
-      - name: Get latest upstream release
-        id: upstream
+      - name: Check for new upstream release
+        run: task check-upstream
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          REPO=$(echo "${{ steps.config.outputs.upstream }}" | sed 's|https://github.com/||')
-          VERSION=$(gh api "repos/${REPO}/releases/latest" --jq '.tag_name' 2>/dev/null || echo "none")
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-
-      - name: Get our latest release
-        id: ours
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=$(gh api "repos/${{ github.repository }}/releases/latest" --jq '.tag_name' 2>/dev/null || echo "none")
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-
-      - name: Compare and notify
-        if: steps.upstream.outputs.version != steps.ours.outputs.version && steps.upstream.outputs.version != 'none'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TOOL="${{ steps.config.outputs.name }}"
-          UPSTREAM="${{ steps.upstream.outputs.version }}"
-          OURS="${{ steps.ours.outputs.version }}"
-          gh issue create \
-            --title "New upstream release: ${TOOL} ${UPSTREAM}" \
-            --body "Upstream released ${UPSTREAM} (we have ${OURS}). Run the Build and Release workflow with version \`${UPSTREAM#v}\` to update."
+          GITHUB_REPOSITORY: ${{ github.repository }}
