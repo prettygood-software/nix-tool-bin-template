@@ -1,5 +1,6 @@
 [tools]
-task = "3"
 actionlint = "latest"
-yamllint = "latest"
+cocogitto = "6"
 jq = "latest"
+task = "3"
+yamllint = "latest"
