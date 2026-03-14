@@ -1,2 +1,8 @@
 [tools]
 lefthook = "1"
+
+[settings]
+experimental = true
+
+[hooks]
+enter = "lefthook install"
