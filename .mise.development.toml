@@ -5,4 +5,4 @@ lefthook = "1"
 experimental = true
 
 [hooks]
-enter = "lefthook install"
+enter = "git rev-parse --is-inside-work-tree >/dev/null 2>&1 && lefthook install"
