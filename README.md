@@ -24,7 +24,7 @@ Once a release is published, the tool can be installed via mise:
 
 ```toml
 [tools]
-"github:OlechowskiMichal/nix-TOOLNAME-bin" = "latest"
+"github:prettygood-software/nix-TOOLNAME-bin" = "latest"
 ```
 
 mise auto-detects GitHub releases with platform-specific tarballs.
