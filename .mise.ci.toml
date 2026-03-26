@@ -1,2 +1,5 @@
 # CI profile — inherits base .mise.toml only
 # Keep empty to avoid installing development-only tools in CI
+
+[settings]
+locked = true
